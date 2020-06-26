@@ -47,10 +47,23 @@ defmodule VKAPI.Macro do
   end
 
   defp methods_map do
-    @schema_path
-    |> File.read!()
+    methods_json()
     |> Jason.decode!()
     |> Map.get("methods")
+  end
+
+  defp methods_json do
+    case File.read(@schema_path) do
+      {:ok, content} -> content
+      {:error, _} -> github_schema()
+    end
+  end
+
+  defp github_schema do
+    {:ok, {_, _, content}} =
+      :httpc.request('https://raw.githubusercontent.com/VKCOM/vk-api-schema/master/methods.json')
+
+    content
   end
 
   defp process_fields(method) do
