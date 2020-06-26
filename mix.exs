@@ -13,7 +13,7 @@ defmodule VKAPI.MixProject do
 
   def application do
     [
-
+      mod: {VKAPI.SessionProvider, []}
     ]
   end
 

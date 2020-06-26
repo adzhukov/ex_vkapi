@@ -5,6 +5,7 @@ defmodule VKAPI.Request do
 
   def request(method, user_params) do
     @default_params
+    |> merge_with_token()
     |> Map.merge(user_params)
     |> form_url(method)
     |> Kernel.to_charlist()
@@ -12,6 +13,11 @@ defmodule VKAPI.Request do
     |> send()
     |> parse_response()
     |> format_json()
+  end
+
+  defp merge_with_token(params) do
+    params
+    |> Map.merge(%{access_token: VKAPI.SessionProvider.access_token()})
   end
 
   defp format_json(json) do
