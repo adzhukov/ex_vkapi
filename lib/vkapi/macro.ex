@@ -79,15 +79,16 @@ defmodule VKAPI.Macro do
 
   defp make_doc_for_method(method) do
     [
-      Map.get(method, "description", "No description provided"),
-      format_params(method)
+      Map.get(method, "description", nil),
+      format_parameters(method),
     ]
+    |> Enum.filter(& &1)
     |> Enum.join("\n\n")
   end
 
-  defp format_params(method) do
+  defp format_parameters(method) do
     case parse_parameters(method) do
-      "" -> ""
+      "" -> nil
       params -> "## Parameters:\n" <> params
     end
   end
