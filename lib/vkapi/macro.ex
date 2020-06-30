@@ -105,14 +105,6 @@ defmodule VKAPI.Macro do
   end
 
   defp group(enum) do
-    Enum.group_by(
-      enum,
-      fn {module, _} ->
-        module
-      end,
-      fn {_, value} ->
-        Macro.escape(value)
-      end
-    )
+    Enum.group_by(enum, &elem(&1, 0), &Macro.escape(elem(&1, 1)))
   end
 end

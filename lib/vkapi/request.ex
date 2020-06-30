@@ -52,23 +52,23 @@ defmodule VKAPI.Request do
     Enum.map_join(query, "&", &encode_kv/1)
   end
 
-  defp encode_kv({key, value}, encoder \\ &URI.encode_www_form/1) do
-    make_pair(key, encode(value, encoder))
+  defp encode_kv({key, value}) do
+    make_pair(key, encode(value))
   end
 
-  defp encode(value, encoder) when is_list(value) do
+  defp encode(value) when is_list(value) do
     value
     |> Enum.join(",")
-    |> encoder.()
+    |> encode()
   end
 
-  defp encode(value, encoder) do
+  defp encode(value) do
     value
     |> Kernel.to_string()
-    |> encoder.()
+    |> URI.encode_www_form()
   end
 
   defp make_pair(key, value) do
-    Kernel.to_string(key) <> "=" <> Kernel.to_string(value)
+    Kernel.to_string(key) <> "=" <> value
   end
 end

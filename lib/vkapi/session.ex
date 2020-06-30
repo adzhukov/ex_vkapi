@@ -26,7 +26,7 @@ defmodule VKAPI.SessionProvider do
   use Agent
 
   defp start_link(_initial_value) do
-    Agent.start_link(fn -> VKAPI.SessionStorage.get() end, name: __MODULE__)
+    Agent.start_link(&VKAPI.SessionStorage.get/0, name: __MODULE__)
   end
 
   def user_id do
