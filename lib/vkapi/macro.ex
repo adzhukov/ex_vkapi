@@ -19,7 +19,7 @@ defmodule VKAPI.Macro do
       {quote bind_quoted: [module: module, methods: methods] do
          Enum.map(methods, fn {name, formatted, description} ->
            @doc description
-           def unquote(formatted)(params \\ %{}) do
+           def unquote(formatted)(params \\ []) do
              VKAPI.Request.request("#{unquote(module)}.#{unquote(name)}", params)
            end
          end)

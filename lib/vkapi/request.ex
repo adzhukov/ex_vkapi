@@ -1,12 +1,11 @@
 defmodule VKAPI.Request do
   @base_url "https://api.vk.com/method/"
   @default_user_agent 'com.vk.vkclient/108 (unknown, iPhone OS 13.1, iPhone, Scale/2.000000)'
-  @default_params %{v: 5.78}
+  @default_params [v: 5.78]
 
   def request(method, user_params) do
-    @default_params
-    |> merge_with_token()
-    |> Map.merge(user_params)
+    defaults()
+    |> Keyword.merge(user_params)
     |> form_url(method)
     |> Kernel.to_charlist()
     |> form_request()
@@ -15,9 +14,9 @@ defmodule VKAPI.Request do
     |> format_json()
   end
 
-  defp merge_with_token(params) do
-    params
-    |> Map.merge(%{access_token: VKAPI.SessionProvider.access_token()})
+  defp defaults do
+    @default_params
+    |> Keyword.merge([access_token: VKAPI.SessionProvider.access_token()])
   end
 
   defp format_json(json) do
@@ -53,7 +52,7 @@ defmodule VKAPI.Request do
   end
 
   defp encode_kv({key, value}) do
-    make_pair(key, encode(value))
+    Kernel.to_string(key) <> "=" <> encode(value)
   end
 
   defp encode(value) when is_list(value) do
@@ -66,9 +65,5 @@ defmodule VKAPI.Request do
     value
     |> Kernel.to_string()
     |> URI.encode_www_form()
-  end
-
-  defp make_pair(key, value) do
-    Kernel.to_string(key) <> "=" <> value
   end
 end
